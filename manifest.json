@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "kshatriya-abhay.nbfc",
+  "name": "Fan Control",
+  "version": "1.0.0",
+  "author": "Abhay Kshatriya",
+  "description": "nbfc-linux fan control with live RPM fan art",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Fan Control",
+    "description": "Monitor fans (live RPM fan art) and switch between automatic and manual control",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
