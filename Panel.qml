@@ -923,7 +923,7 @@ text: "\uEFA7"
     Timer {
       id: spinTimer
       interval: Model.spinInterval(card.rpm)
-      running: card.rpm > 0
+      running: root.opened && card.rpm > 0
       repeat: true
       onTriggered: card.frameIndex = (card.frameIndex + 1) % Model.FAN_FRAMES.length
       onIntervalChanged: if (running) restart()
