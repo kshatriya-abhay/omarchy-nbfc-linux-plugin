@@ -99,11 +99,11 @@ function deriveApplied(fans) {
 // is picked by fanFrame() from the fan's speed percent; there is no animation.
 // All lines are 5 chars wide so the art box stays put as frames swap.
 var FAN_FRAMES = [
-  "     \n  │  \n  ◯  \n  │  \n     ",
-  "     \n  │  \n──◯──\n  │  \n     ",
-  "    ╱\n  │ ╱\n──◯──\n ╱│  \n╱    ",
-  "╲   ╱\n ╲│╱ \n──◯──\n ╱│╲ \n╱   ╲"
-]
+  "  .---.  \n /  |  \\ \n| --@-- |\n \\  |  / \n  '---'  ",
+  "  .---.  \n / \\ / \\ \n| --@-- | ~\n \\ / \\ / \n  '---'  ",
+  "  .---.  \n / \\|/ \\ \n| -#@#- | =>\n \\ /|\\ / \n  '---'  ",
+  "  .---.  \n /#####\\ \n|##(@)##| ==>\n \\#####/  ~\n  '---'  "
+];
 
 // Index into FAN_FRAMES for a fan running at the given speed percent
 // (0-100). Bounds clamp so out-of-range input still selects a valid frame.
