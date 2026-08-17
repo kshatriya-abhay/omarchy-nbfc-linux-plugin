@@ -877,8 +877,6 @@ text: "\uEFA7"
     required property bool autoMode
     required property real target
 
-    property int frameIndex: 0
-
     spacing: Style.space(4)
 
     Text {
@@ -893,7 +891,7 @@ text: "\uEFA7"
     }
 
     Text {
-      text: Model.FAN_FRAMES[card.frameIndex]
+      text: Model.FAN_FRAMES[Model.fanFrame(card.target)]
       color: root.bar.foreground
       font.family: root.bar.fontFamily
       font.pixelSize: Style.font.title
@@ -918,15 +916,6 @@ text: "\uEFA7"
       font.pixelSize: Style.font.caption
       horizontalAlignment: Text.AlignHCenter
       width: parent.width
-    }
-
-    Timer {
-      id: spinTimer
-      interval: Model.spinInterval(card.rpm)
-      running: root.opened && card.rpm > 0
-      repeat: true
-      onTriggered: card.frameIndex = (card.frameIndex + 1) % Model.FAN_FRAMES.length
-      onIntervalChanged: if (running) restart()
     }
   }
 }

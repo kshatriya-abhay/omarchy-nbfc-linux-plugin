@@ -94,24 +94,25 @@ function deriveApplied(fans) {
   return { mode: "manual", fanIndex: first, percent: clampPercent(fans[first].target) }
 }
 
-// ASCII fan art: 4 frames of a hub-and-blade fan spinning. The cross (blades
-// at N/E/S/W) and X (blades on the diagonals) alternate, which reads as
-// rotation. All lines are 3 chars wide so the art box stays put while frames
-// swap.
+// ASCII fan art: 4 static frames, one per speed quartile. More spokes = faster
+// fan (2 spokes at <=25%, 4 at <=50%, 6 at <=75%, 8 above). The selected frame
+// is picked by fanFrame() from the fan's speed percent; there is no animation.
+// All lines are 5 chars wide so the art box stays put as frames swap.
 var FAN_FRAMES = [
-  " │ \n │ \n─◯─\n │ \n │ ",
-  "╲ ╱\n ╳ \n─◯─\n ╳ \n╱ ╲",
-  " │ \n │ \n─◯─\n │ \n │ ",
-  "╱ ╲\n ╳ \n─◯─\n ╳ \n╲ ╱"
+  "     \n  │  \n  ◯  \n  │  \n     ",
+  "     \n  │  \n──◯──\n  │  \n     ",
+  "    ╱\n  │ ╱\n──◯──\n ╱│  \n╱    ",
+  "╲   ╱\n ╲│╱ \n──◯──\n ╱│╲ \n╱   ╲"
 ]
 
-// Frame interval (ms) for a fan at a given RPM. Higher RPM spins faster, 0 RPM
-// stands still. Clamped so the animation never strobes.
-function spinInterval(rpm) {
-  var r = Number(rpm) || 0
-  if (r <= 0) return 0
-  var fps = Math.min(20, Math.max(1, r / 250))
-  return Math.round(1000 / fps)
+// Index into FAN_FRAMES for a fan running at the given speed percent
+// (0-100). Bounds clamp so out-of-range input still selects a valid frame.
+function fanFrame(speedPercent) {
+  var p = Number(speedPercent) || 0
+  if (p <= 25) return 0
+  if (p <= 50) return 1
+  if (p <= 75) return 2
+  return 3
 }
 
 if (typeof module !== "undefined") {
@@ -121,6 +122,6 @@ if (typeof module !== "undefined") {
     parseStatus: parseStatus,
     deriveApplied: deriveApplied,
     FAN_FRAMES: FAN_FRAMES,
-    spinInterval: spinInterval
+    fanFrame: fanFrame
   }
 }

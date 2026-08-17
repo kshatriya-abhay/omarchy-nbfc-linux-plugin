@@ -86,7 +86,7 @@ Click the fan icon in the bar to open the panel:
 
 ## Roadmap
 
-- [x] Live RPM fan art (speed scales with RPM)
+- [x] Fan art scaled to speed (4 static frames, more spokes = faster)
 - [x] Auto / Manual mode with staged edits (Save / Cancel)
 - [x] Per-fan picker with live target seeding
 - [x] Percent slider with keyboard support
