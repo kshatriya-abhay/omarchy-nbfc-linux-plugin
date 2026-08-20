@@ -94,25 +94,26 @@ function deriveApplied(fans) {
   return { mode: "manual", fanIndex: first, percent: clampPercent(fans[first].target) }
 }
 
-// ASCII fan art: 4 static frames, one per speed quartile. More spokes = faster
-// fan (2 spokes at <=25%, 4 at <=50%, 6 at <=75%, 8 above). The selected frame
-// is picked by fanFrame() from the fan's speed percent; there is no animation.
-// All lines are 5 chars wide so the art box stays put as frames swap.
+// ASCII fan art: 2 frames the fan oscillates between to look like it spins —
+// one with vertical/horizontal spokes (cross), one with diagonal spokes (X).
+// The swap rate comes from spinInterval() below. Both frames are 5 chars wide
+// so the art box stays put as they alternate.
 var FAN_FRAMES = [
-  "  .---.  \n /  |  \\ \n| --@-- |\n \\  |  / \n  '---'  ",
-  "  .---.  \n / \\ / \\ \n| --@-- | ~\n \\ / \\ / \n  '---'  ",
-  "  .---.  \n / \\|/ \\ \n| -#@#- | =>\n \\ /|\\ / \n  '---'  ",
-  "  .---.  \n /#####\\ \n|##(@)##| ==>\n \\#####/  ~\n  '---'  "
+  // Frame 0: Cross (+)
+  " .---.  \n /  |  \\ \n |--()--|\n \\  |  / \n  '---' ",
+
+  // Frame 1: Diagonal (x)
+  " .---.  \n / \\ / \\ \n |  ()  |\n \\ / \\ / \n  '---' "
 ];
 
-// Index into FAN_FRAMES for a fan running at the given speed percent
-// (0-100). Bounds clamp so out-of-range input still selects a valid frame.
-function fanFrame(speedPercent) {
+// Swap interval (ms) for the fan art at a given speed percent (0-100).
+// Lower speeds turn slower, higher speeds faster, per the speed quartiles.
+function spinInterval(speedPercent) {
   var p = Number(speedPercent) || 0
-  if (p <= 25) return 0
-  if (p <= 50) return 1
-  if (p <= 75) return 2
-  return 3
+  if (p < 25) return 1000
+  if (p < 50) return 500
+  if (p < 75) return 333
+  return 250
 }
 
 if (typeof module !== "undefined") {
@@ -122,6 +123,6 @@ if (typeof module !== "undefined") {
     parseStatus: parseStatus,
     deriveApplied: deriveApplied,
     FAN_FRAMES: FAN_FRAMES,
-    fanFrame: fanFrame
+    spinInterval: spinInterval
   }
 }

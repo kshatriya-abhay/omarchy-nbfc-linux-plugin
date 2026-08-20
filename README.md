@@ -2,16 +2,20 @@
 
 An [omarchy](https://omarchy.org) status-bar widget for controlling
 [nbfc-linux](https://github.com/nbfc-linux/nbfc-linux) fans — the Linux port of
-NoteBook FanControl. It shows each fan as spinning ASCII art whose speed tracks
-the live RPM (with the exact RPM printed below), and lets you switch between
+NoteBook FanControl. It shows each fan as ASCII art that spins faster as the
+fan speeds up (with the exact RPM printed below), and lets you switch between
 auto and manual control with staged edits that only reach the hardware when you
 press **Save**.
 
+![Fan Control panel](preview.png)
+
 ## Features
 
-- **Live fan art** — every fan is drawn as a hub-and-blade ASCII fan that spins
-  faster as RPM climbs; the current RPM is printed right underneath, with the
-  temperature alongside
+- **Live fan art** — every fan is drawn as ASCII art that oscillates between
+  cross and X spokes to look like it's spinning; it spins faster as the fan's
+  speed percent climbs (1–4 swaps/sec). The animation only runs while the panel
+  is open. Current RPM is printed right underneath, with the temperature
+  alongside
 - **Auto / Manual mode** — one tap back to nbfc's automatic control, or take
   over and pick a target speed yourself
 - **Fan picker** (Manual) — "All fans" or a specific fan (labels pulled from
@@ -66,14 +70,52 @@ repo URL.
 **From the CLI:**
 
 ```bash
-omarchy plugin add https://github.com/kshatriya-abhay/omarchy-nbfc-plugin
+omarchy plugin add https://github.com/kshatriya-abhay/omarchy-nbfc-linux-plugin
 ```
+
+## Removal
+
+**From the UI:** Omarchy Menu > Setup > Plugins, select **Fan Control**, then
+Remove.
+
+**From the CLI:**
+
+```bash
+omarchy plugin remove kshatriya-abhay.nbfc
+```
+
+Removal just unloads the widget and deletes the plugin folder. It never
+touches `nbfc`, its config, or your fan settings — the fans keep whatever mode
+they were in (the same state `nbfc status` reports). To fully restore
+automatic control after removing the widget, run:
+
+```bash
+nbfc set -a
+```
+
+## Dependencies
+
+| Dependency | Why | Notes |
+| --- | --- | --- |
+| [nbfc-linux](https://github.com/nbfc-linux/nbfc-linux) | Provides the `nbfc` CLI and `nbfc_service` the widget talks to | Required, runtime |
+| [omarchy](https://omarchy.org) (Quickshell, v4) | Host shell the widget runs in | Required, runtime |
+
+There are no other runtime dependencies — the widget uses only the QML/JS
+built-ins that ship with omarchy (no bundled binaries, no install hooks, no
+remote calls).
+
+## Permissions
+
+The widget is read-only with respect to your system: it only runs
+`nbfc status` (polling) and `nbfc set` (writes), and `nbfc set` is only
+invoked when you press **Save** — never automatically. It does not modify or
+overwrite any configuration file, and uninstalling it leaves no state behind.
 
 ## Usage
 
 Click the fan icon in the bar to open the panel:
 
-- **Fans** — read-only display at the top: each fan's spinning ASCII art, its
+- **Fans** — read-only display at the top: each fan's animated ASCII art, its
   RPM, and temperature.
 - **Mode** — choose **Auto** (nbfc controls all fans) or **Manual** (you pick).
   In Auto, no further options are shown.
@@ -86,7 +128,8 @@ Click the fan icon in the bar to open the panel:
 
 ## Roadmap
 
-- [x] Fan art scaled to speed (4 static frames, more spokes = faster)
+- [x] Animated fan art (oscillates between cross and X spokes, faster with speed)
+- [x] Animation only runs while the panel is open
 - [x] Auto / Manual mode with staged edits (Save / Cancel)
 - [x] Per-fan picker with live target seeding
 - [x] Percent slider with keyboard support

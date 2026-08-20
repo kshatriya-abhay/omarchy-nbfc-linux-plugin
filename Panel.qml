@@ -877,6 +877,8 @@ text: "\uEFA7"
     required property bool autoMode
     required property real target
 
+    property int frameIndex: 0
+
     spacing: Style.space(4)
 
     Text {
@@ -891,7 +893,7 @@ text: "\uEFA7"
     }
 
     Text {
-      text: Model.FAN_FRAMES[Model.fanFrame(card.target)]
+      text: Model.FAN_FRAMES[card.frameIndex]
       color: root.bar.foreground
       font.family: root.bar.fontFamily
       font.pixelSize: Style.font.title
@@ -916,6 +918,18 @@ text: "\uEFA7"
       font.pixelSize: Style.font.caption
       horizontalAlignment: Text.AlignHCenter
       width: parent.width
+    }
+
+    // Oscillates the art between the cross (frame 0) and X (frame 1) frames
+    // at a rate set by the fan's speed percent. Only runs while the panel is
+    // open, so the fans don't wake the shell up when idle.
+    Timer {
+      id: spinTimer
+      interval: Model.spinInterval(card.target)
+      running: root.opened && card.rpm > 0
+      repeat: true
+      onTriggered: card.frameIndex = 1 - card.frameIndex
+      onIntervalChanged: if (running) restart()
     }
   }
 }
