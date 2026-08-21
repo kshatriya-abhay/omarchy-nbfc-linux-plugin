@@ -510,6 +510,7 @@ text: "\uEFA7"
               // Selected nbfc config, shown right above the fan art.
               Text {
                 id: configNameValue
+                textFormat: Text.PlainText
                 text: root.configName !== "" ? root.configName : "No config"
                 color: Qt.darker(root.bar.foreground, 1.4)
                 font.family: root.bar.fontFamily
@@ -882,6 +883,7 @@ text: "\uEFA7"
     spacing: Style.space(4)
 
     Text {
+      textFormat: Text.PlainText
       text: card.shortName
       color: Qt.darker(root.bar.foreground, 1.4)
       font.family: root.bar.fontFamily
