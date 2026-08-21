@@ -67,6 +67,10 @@ Panel {
     return root.fansModel.get(index).name
   }
 
+  function sanitize(text) {
+    return String(text).replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  }
+
   // Applied state summary for the hero line, e.g. "AUTO" or
   // "MANUAL · CPU · 47%".
   function appliedSummary() {
@@ -74,7 +78,7 @@ Panel {
     var label = root.appliedFanIndex === -1
       ? "ALL FANS"
       : (root.fansModel.get(root.appliedFanIndex)
-          ? root.fansModel.get(root.appliedFanIndex).shortName.toUpperCase()
+          ? root.sanitize(root.fansModel.get(root.appliedFanIndex).shortName.toUpperCase())
           : "FAN")
     return "MANUAL · " + label + " · " + root.appliedPercent + "%"
   }
@@ -95,7 +99,7 @@ Panel {
       return
     }
     root.readOnly = parsed.readOnly
-    root.configName = parsed.configName
+    root.configName = root.sanitize(parsed.configName)
     root.available = parsed.fans.length > 0
     root.availabilityIssue = parsed.fans.length > 0 ? "" : "nbfc reported no fans. Is the service running?"
 
@@ -106,7 +110,7 @@ Panel {
       for (var i = 0; i < fans.length; i++) {
         var f = fans[i]
         root.fansModel.set(i, {
-          name: f.name, shortName: f.shortName, temp: f.temperature,
+          name: root.sanitize(f.name), shortName: root.sanitize(f.shortName), temp: f.temperature,
           rpm: f.rpm, autoMode: f.auto, target: f.target
         })
       }
@@ -115,7 +119,7 @@ Panel {
       for (i = 0; i < fans.length; i++) {
         f = fans[i]
         root.fansModel.append({
-          name: f.name, shortName: f.shortName, temp: f.temperature,
+          name: root.sanitize(f.name), shortName: root.sanitize(f.shortName), temp: f.temperature,
           rpm: f.rpm, autoMode: f.auto, target: f.target
         })
       }
@@ -475,7 +479,7 @@ Panel {
             detail: root.dirty ? "UNSAVED" : ""
             iconComponent: Component {
               Text {
-text: "\uEFA7"
+                text: "\uEFA7"
                 color: root.bar.foreground
                 font.family: root.bar.fontFamily
                 font.pixelSize: Style.font.display
